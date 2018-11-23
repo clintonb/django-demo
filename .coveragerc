@@ -1,0 +1,12 @@
+[run]
+branch=True
+source=django_demo
+omit =
+    django_demo/settings*
+    django_demo/conf*
+    *conftest.py
+    *wsgi.py
+    *migrations*
+    *admin.py
+    *static*
+    *templates*

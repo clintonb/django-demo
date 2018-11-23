@@ -1,0 +1,23 @@
+{
+  "AWSEBDockerrunVersion": 1,
+  "Image": {
+    "Name": "clintonb/django_demo:latest",
+    "Update": true
+  },
+  "Ports": [
+    {
+      "ContainerPort": 8000
+    }
+  ],
+  "Volumes": [
+    {
+      "HostDirectory": "/public/media",
+      "ContainerDirectory": "/public/media"
+    },
+    {
+      "HostDirectory": "/public/static",
+      "ContainerDirectory": "/public/static"
+    }
+  ],
+  "Logging": "/logs"
+}
