@@ -1,10 +1,10 @@
 Django Demo  |Travis|_ |Codecov|_
 ===================================================
-.. |Travis| image:: https://travis-ci.org/TODO/Django Demo.svg?branch=master
-.. _Travis: https://travis-ci.org/TODO/Django Demo
+.. |Travis| image:: https://travis-ci.org/clintonb/django-demo.svg?branch=master
+.. _Travis: https://travis-ci.org/clintonb/django-demo
 
-.. |Codecov| image:: http://codecov.io/github/TODO/Django Demo/coverage.svg?branch=master
-.. _Codecov: http://codecov.io/github/TODO/Django Demo?branch=master
+.. |Codecov| image:: http://codecov.io/gh/clintonb/django-demo/branch/master/graph/badge.svg
+.. _Codecov: http://codecov.io/gh/clintonb/django-demo
 
 TODO The ``README.rst`` file should start with a brief description of the project.
 
