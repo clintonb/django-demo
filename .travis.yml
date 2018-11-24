@@ -12,7 +12,7 @@ cache: pip
 
 install:
   - make docker.build
-  - make docker.up
+  - make local.up
 
 script:
   - docker exec -t django_demo.app make quality
