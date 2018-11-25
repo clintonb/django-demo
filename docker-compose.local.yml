@@ -15,13 +15,13 @@ services:
     #   - 5432:5432
     restart: always
   app:
+    command: --reload
     links:
       - db
     environment:
       - DEBUG=true
       - SECRET_KEY=replace-me
       - DATABASE_URL=psql://postgres:postgres@django_demo.db:5432/django_demo?connect_timeout=60
-#      - GUNICORN_CMD_ARGS=--workers=2 --worker-class=gevent --bind=0.0.0.0:8000 --reload
     ports:
       # This port is primarily exposed for debugging. Use the web service's port to properly access the service.
       - 8000:8000

@@ -21,7 +21,7 @@ COPY Pipfile /app/django_demo
 COPY Pipfile.lock /app/django_demo
 
 # TODO Switch to environment variable when https://github.com/pypa/pipenv/issues/3278 is resolved.
-RUN pipenv install --dev --system
+RUN pipenv install --dev --system --deploy
 
 COPY . /app/django_demo
 
