@@ -30,7 +30,17 @@ after_success:
   - codecov
 
 deploy:
-  provider: script
-  script: bash .travis/docker_push.sh
-  on:
-    branch: master
+  - provider: script
+    script: bash .travis/docker_push.sh
+    on:
+      branch: master
+  - provider: elasticbeanstalk
+    # User has AWSElasticBeanstalkService role
+    access_key_id: AKIAIBOZTACVTZLI5WSQ
+    secret_access_key:
+      secure: Wqbr8V3dykYhQnTA+3PTnXew9QvnVE9vNl0UBtoTaQwMNIfpXfIYuFJuzuhuHLmzaIk+MRsPD9NxY/y2OEngll58AruOrz6FFIFFJCqJWXM+0V2s8HcCKRyMWICXdJQicDFN1ge34pP/cuby5lVfHSq7rlTv5shr5cGJ0Ynwwlv2P8vw2o2LcoS2AQCwQpE73rkvXKLvHV+ahi8SDZAQltaPRvxCzEhbPESWfDA6Qdpk3YsVxCFrerKOqm0dauxv3wa6IEg/EUECPPRq1bG47D3m+iFivVecpurQT7UBWXx99zeHxxgaJ3x4Gvt+K4nqON2U3s933JR9hWGrfqKG66HEaqy5Yg8F2HSszY5SKeF7qNUT4ZbadU7eZZdfiI0IWMYzads4q9h6s+qAcb+Pky2kFyaukjCB+yg4HAryLtUL96wpINGqsVePgqBe3G/hVBmccIXXPgVdY4ShszuJle2+n4v0x8BdaFhCr9wzospNKgj6MMC7/wUXM6oBoWOHClyan4rucxjpXeGq/jTVJS1Uwsn6c43FnSBSpVEnLtKGiXBqwH4+zyociPWvS8PAyu4wTLkq36WQeB9m9relDseKed8SD5geBBhMBiXb0c51jDC0AeiyicYlaJqMKZCu68uNjlU2yNQQZJvWBpnBn52l2UTA+sL2Pa/QW5a0Wls=
+    region: us-west-2
+    app: django-demo
+    env: production
+    on:
+      branch: master
