@@ -18,6 +18,7 @@ env:
 script:
   - make docker.build
   - make local.up
+  - sleep 5
   - docker exec -t django_demo.app make quality
   - docker exec -t django_demo.app make static
   - docker exec -t django_demo.app make test
