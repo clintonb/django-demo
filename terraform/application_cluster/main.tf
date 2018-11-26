@@ -1,5 +1,4 @@
 variable "application_name" {}
-
 variable "db_name" {}
 variable "db_username" {}
 variable "db_password" {}
@@ -17,26 +16,95 @@ variable "route_53_zone_id" {}
 variable "secret_key" {}
 variable "ssl_cert_arn" {}
 
+resource "aws_security_group" "application-load-balancer" {
+  name = "${var.application_name}-${var.environment}-load-balancer"
+
+  // Allow HTTP and HTTPS connections from anywhere
+  ingress {
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
+resource "aws_security_group" "application" {
+  name = "${var.application_name}-${var.environment}-app"
+
+  // Allow HTTP connections from the load balancer
+  ingress {
+    from_port = 80
+    to_port   = 80
+    protocol  = "tcp"
+
+    security_groups = [
+      "${aws_security_group.application-load-balancer.id}",
+    ]
+  }
+
+  // Allow SSH access from anywhere
+  ingress {
+    from_port = 22
+    to_port   = 22
+    protocol  = "tcp"
+
+    cidr_blocks = [
+      "0.0.0.0/0",
+    ]
+  }
+}
+
+resource "aws_security_group" "database" {
+  name = "${var.application_name}-${var.environment}-db"
+
+  // Allow HTTP connections from the application
+  ingress {
+    from_port = 5432
+    to_port   = 5432
+    protocol  = "tcp"
+
+    security_groups = [
+      "${aws_security_group.application.id}",
+    ]
+  }
+}
+
 resource "aws_db_instance" "database" {
   allocated_storage         = 20
   storage_type              = "gp2"
   engine                    = "postgres"
   engine_version            = "10.5"
   instance_class            = "db.t2.micro"
+  deletion_protection       = "true"
   identifier                = "${var.application_name}-${var.environment}"
   final_snapshot_identifier = "${var.application_name}-${var.environment}-final"
   name                      = "${var.db_name}"
   username                  = "${var.db_username}"
   password                  = "${var.db_password}"
+  publicly_accessible       = "false"
+  backup_retention_period   = "7"
+  backup_window             = "10:00-10:30"
+
+  vpc_security_group_ids = [
+    "${aws_security_group.database.id}",
+  ]
 }
 
 resource "aws_elastic_beanstalk_application" "application" {
   name = "${var.application_name}"
 
-  //  TODO Limit the number of retained application versions
+  //  TODO Fix issue with IAM roles
+  //  // Retain the latest 32 application versions/deploys
   //  appversion_lifecycle {
-  //    service_role          = "${aws_iam_role.beanstalk_service.arn}"
-  //    max_count             = 128
+  //    service_role          = "aws-elasticbeanstalk-service-role"
+  //    max_count             = 32
   //    delete_source_from_s3 = true
   //  }
 }
@@ -56,6 +124,12 @@ resource "aws_elastic_beanstalk_environment" "environment" {
 
   setting {
     namespace = "aws:autoscaling:launchconfiguration"
+    name      = "SecurityGroups"
+    value     = "${aws_security_group.application.name}"
+  }
+
+  setting {
+    namespace = "aws:autoscaling:launchconfiguration"
     name      = "IamInstanceProfile"
     value     = "aws-elasticbeanstalk-ec2-role"
   }
@@ -65,6 +139,12 @@ resource "aws_elastic_beanstalk_environment" "environment" {
     namespace = "aws:elasticbeanstalk:environment"
     name      = "LoadBalancerType"
     value     = "application"
+  }
+
+  setting {
+    namespace = "aws:elasticbeanstalk:environment"
+    name      = "ServiceRole"
+    value     = "aws-elasticbeanstalk-service-role"
   }
 
   // Use our custom path for health checks since not all projects have an active root path
@@ -78,6 +158,12 @@ resource "aws_elastic_beanstalk_environment" "environment" {
     namespace = "aws:elasticbeanstalk:application"
     name      = "Application Healthcheck URL"
     value     = "${var.health_check_path}"
+  }
+
+  setting {
+    namespace = "aws:elbv2:loadbalancer"
+    name      = "SecurityGroups"
+    value     = "${aws_security_group.application-load-balancer.id}"
   }
 
   // Update the ELB/ALB to terminate SSL
