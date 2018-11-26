@@ -1,0 +1,21 @@
+#branch-defaults:
+#  master:
+#    environment: null
+#    group_suffix: null
+#environment-defaults:
+#  django-demo-production:
+#    branch: null
+#    repository: null
+global:
+  application_name: django-demo
+#  default_ec2_keyname: null
+#  default_platform: arn:aws:elasticbeanstalk:us-west-2::platform/Docker running on
+#    64bit Amazon Linux/2.12.5
+  default_region: us-west-2
+#  include_git_submodules: true
+#  instance_profile: null
+#  platform_name: null
+#  platform_version: null
+#  profile: null
+#  sc: null
+#  workspace_type: Application

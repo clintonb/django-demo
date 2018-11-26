@@ -149,11 +149,6 @@ dmypy.json
 # Docs output
 docs/_build/
 
-# Elastic Beanstalk Files
-.elasticbeanstalk/*
-!.elasticbeanstalk/*.cfg.yml
-!.elasticbeanstalk/*.global.yml
-
 # Local .terraform directories
 **/.terraform/*
 
