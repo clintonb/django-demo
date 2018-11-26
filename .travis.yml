@@ -40,5 +40,6 @@ deploy:
     region: us-west-2
     app: django-demo
     env: production
+    bucket_name: elasticbeanstalk-us-west-2-102034828053
     on:
       branch: master
